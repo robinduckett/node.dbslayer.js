@@ -39,7 +39,7 @@ Server.prototype.fetch = function(object, key) {
       }
 
       if (object.MYSQL_ERROR !== undefined) {
-        thiso.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
+        server.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
       } else if (object.ERROR !== undefined) {
         server.emit('error', object.ERROR);
       } else {
