@@ -5,46 +5,49 @@ name: dbslayer.js
 description: Interface to DBSlayer for Node.JS
 
 author: [Guillermo Rauch](http://devthought.com)
+updaters: [Robin Duckett](http://www.twitter.com/robinduckett)
 ...
 */
 
 var sys = require('sys'),
     http = require('http'),
-    
-    booleanCommands = ['STAT', 'CLIENT_INFO', 'HOST_INFO', 'SERVER_VERSION', 'CLIENT_VERSION'],
+    events = require('events'),
+    booleanCommands = ['STAT', 'CLIENT_INFO', 'HOST_INFO', 'SERVER_VERSION', 'CLIENT_VERSION'];
 
-Server = this.Server = function(host, port, timeout){
+var Server = function(host, port, timeout) {
   this.host = host || 'localhost';
   this.port = port || 9090;
   this.timeout = timeout;
 };
 
-Server.prototype.fetch = function(object, key){
-  var connection = http.createClient(this.port, this.host),
-      request = connection[connection.get ? 'get' : 'request']('/db?' + escape(JSON.stringify(object)), {'host': this.host}),
-      promise = new process.Promise();
-  
-  promise.timeout(this.timeout);
+sys.inherits(Server, events.EventEmitter);
 
-  request.finish(function(response){
-    response.addListener('body', function(data){  
+Server.prototype.fetch = function(object, key) {
+  
+  var connection = http.createClient(this.port, this.host);
+  var request = connection.request('GET', '/db?' + escape(JSON.stringify(object)), {'host': this.host});
+  var server = this;
+
+  request.addListener('response', function(response) {
+    response.setEncoding('utf8');
+    response.addListener('data', function(data) {
       try {
         var object = JSON.parse(data);
-      } catch(e){
-        return promise.emitError(e);
-      }      
-      
-      if (object.MYSQL_ERROR !== undefined){
-        promise.emitError(object.MYSQL_ERROR, object.MYSQL_ERRNO);
-      } else if (object.ERROR !== undefined){
-        promise.emitError(object.ERROR);
+      } catch(e) {
+        server.emit('error', e);
+      }
+
+      if (object.MYSQL_ERROR !== undefined) {
+        thiso.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
+      } else if (object.ERROR !== undefined) {
+        server.emit('error', object.ERROR);
       } else {
-        promise.emitSuccess(key ? object[key] : object);
-      }      
+        server.emit(key.toLowerCase(), key ? object[key] : object);
+      }
     });
   });
-  
-  return promise;
+
+  request.end();
 };
 
 Server.prototype.query = function(query){
@@ -60,3 +63,5 @@ for (var i = 0, l = booleanCommands.length; i < l; i++){
     };
   })(booleanCommands[i]);
 }
+
+exports.Server = Server;

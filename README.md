@@ -17,35 +17,41 @@ Requirements
 
 How to Use
 ----------
-	
+  
 From your node.js script, require the `dbslayer` package
 
-	var db = require('dbslayer');
+    var db = require('dbslayer');
 
 Initialize a connection
 
-	var connection = db.Server('localhost', 9090);
-	
+    var connection = db.Server('localhost', 9090);
+  
 and then perform a query:
 
-	connection.query("SELECT * FROM table");
-	
-To be truly non-blocking, `Server::fetch` has to return a promise and not the result immediately. This means that in order to be able to perform queries in a designated order or access the result, you'll have to use callbacks:
+    connection.query("SELECT * FROM table");
+  
+To be truly non-blocking, you must use listeners. This means that in order to be able to perform queries in a designated order or access the result, you'll have to use callbacks:
 
-	connection.query("SELECT * FROM TABLE").addCallback(function(result){
-		for (var i = 0, l = result.ROWS.length; i < l; i++){
-			var row = result.ROWS[i];
-			// do something with the data
-		}
-	});
-	
+    connection.query("SELECT * FROM TABLE");
+    connection.addListener('result', function(result) {
+      for (var i = 0, l = result.ROWS.length; i < l; i++){
+        var row = result.ROWS[i];
+        // do something with the data
+      }
+      
+      connection.removeListener('result', arguments.callee);
+    });
+    
+You **must** remember to remove your listener, otherwise it will be called along with any new listeners you create.
+  
 If you want to capture MySQL errors, subscribe to the 'error' event
 
-	connection.query("SELECT * FROM inexistent_table").addErrback(function(error, errno){
-		alert('mysql error! + ' error);
-	});
-	
-Aside from query, the commands `stat`, `client_info`, `host_info`, `server_version` and `client_version` are available, which provide the respective information about the server.
+    connection.query("SELECT * FROM inexistent_table")
+    connection.addListener('error', function(error, errno){
+      alert('mysql error! + ' error);
+    });
+  
+Aside from query, the commands `stat`, `client_info`, `host_info`, `server_version` and `client_version` are available, which provide the respective information about the server. In order to preserve somewhat backwards compatibility, these have seperate events per function.
 
 Installing DBSlayer
 -------------------
@@ -54,23 +60,24 @@ Compile it according to the instructions [here](http://code.nytimes.com/projects
 
 Then create a /etc/dbslayer.conf file defining a database. Here I'm defining the `cool` server which connects to my `mysql` database
 
-	[cool]
-	database=mysql
-	host=localhost
-	user=root
-	pass=1234
-	
+    [cool]
+    database=mysql
+    host=localhost
+    user=root
+    pass=1234
+  
 Then run DBSlayer for that connection:
 
-	dbslayer -c /etc/dbslayer.conf -s cool
-	
+    dbslayer -c /etc/dbslayer.conf -s cool
+  
 Test it by running test.js like this:
 
-	node test.js "SELECT * FROM help_category"
-	
+    node test.js "SELECT * FROM help_category"
+  
 If you get a bunch of entries like in this [screenshot](http://cld.ly/9aosh) then dbslayer (and node.dbslayer.js) work!
 
-Author
+Authors
 ------
 
 Guillermo Rauch <[http://devthought.com](http://devthought.com)>
+Robin Duckett <[http://www.twitter.com/robinduckett](http://www.twitter.com/robinduckett)>
