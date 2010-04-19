@@ -3,6 +3,7 @@
 name: dbslayer.js
 
 description: Interface to DBSlayer for Node.JS
+version: 0.2
 
 author: [Guillermo Rauch](http://devthought.com)
 updaters: [Robin Duckett](http://www.twitter.com/robinduckett)

@@ -12,7 +12,7 @@ DBSlayer benefits include:
 Requirements
 ------------
 
-* [Node.js](http://nodejs.org/) (tested with v0.1.21)
+* [Node.js](http://nodejs.org/) (tested with v0.1.90)
 * [DBSlayer](http://code.nytimes.com/projects/dbslayer/) (tested with beta-12)
 
 How to Use
@@ -48,7 +48,7 @@ If you want to capture MySQL errors, subscribe to the 'error' event
 
     connection.query("SELECT * FROM inexistent_table")
     connection.addListener('error', function(error, errno){
-      alert('mysql error! + ' error);
+      sys.puts('mysql error! + ' error);
     });
   
 Aside from query, the commands `stat`, `client_info`, `host_info`, `server_version` and `client_version` are available, which provide the respective information about the server. In order to preserve somewhat backwards compatibility, these have seperate events per function.

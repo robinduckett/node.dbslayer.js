@@ -7,6 +7,7 @@ description: <
   It takes three parameters from the SQL query, a host
 
 author: [Guillermo Rauch](http://devthought.com)
+updaters: [Robin Duckett](http://www.twitter.com/robinduckett)
 ...
 */
 
