@@ -1,15 +1,12 @@
 /*
 ---
 name: dbslayer.js
-
 description: Interface to DBSlayer for Node.JS
 version: 0.2
-
 author: [Guillermo Rauch](http://devthought.com)
 updaters: [Robin Duckett](http://www.twitter.com/robinduckett)
 ...
 */
-
 var sys = require('sys'),
     http = require('http'),
     events = require('events'),
@@ -22,13 +19,10 @@ var Server = function(host, port, timeout) {
 };
 
 sys.inherits(Server, events.EventEmitter);
-
 Server.prototype.fetch = function(object, key) {
-  
   var connection = http.createClient(this.port, this.host);
   var request = connection.request('GET', '/db?' + escape(JSON.stringify(object)), {'host': this.host});
   var server = this;
-
   request.addListener('response', function(response) {
     response.setEncoding('utf8');
     response.addListener('data', function(data) {
@@ -37,7 +31,6 @@ Server.prototype.fetch = function(object, key) {
       } catch(e) {
         server.emit('error', e);
       }
-
       if (object.MYSQL_ERROR !== undefined) {
         server.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
       } else if (object.ERROR !== undefined) {
@@ -47,12 +40,12 @@ Server.prototype.fetch = function(object, key) {
       }
     });
   });
-
   request.end();
 };
 
 Server.prototype.query = function(query){
-  return this.fetch({SQL: query}, 'RESULT');
+  this.fetch({SQL: query}, 'RESULT')
+  return this;
 };
 
 for (var i = 0, l = booleanCommands.length; i < l; i++){
@@ -64,5 +57,43 @@ for (var i = 0, l = booleanCommands.length; i < l; i++){
     };
   })(booleanCommands[i]);
 }
+Server.prototype.fetch_object = function(res, callback) {
+  for (var row, i = 0; i < res.ROWS.length; row = res.ROWS[i], i++) {
+    var ret = {};
+    if (typeof row !== "undefined") {
+      for (var j = 0; j < res.HEADER.length; j ++) {
+        ret[res.HEADER[j]] = row[j];
+      }
+
+      callback.apply(this, [ret]);
+    }
+  }
+};
+
+Server.prototype.fetch_array = function(res, callback) {
+  for (var row, i = 0; i < res.ROWS.length; row = res.ROWS[i], i++) {
+    var ret = [];
+    if (typeof row !== "undefined") {
+      for (var j = 0; j < res.HEADER.length; j ++) {
+        ret[j] = row[j];
+      }
+
+      callback.apply(this, [ret]);
+    }
+  }
+};
+
+Server.prototype.fetch_args = function(res, callback) {
+  for (var row, i = 0; i < res.ROWS.length; row = res.ROWS[i], i++) {
+    var ret = [];
+    if (typeof row !== "undefined") {
+      for (var j = 0; j < res.HEADER.length; j ++) {
+        ret[j] = row[j];
+      }
+
+      callback.apply(this, ret);
+    }
+  }
+};
 
 exports.Server = Server;
