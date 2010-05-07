@@ -50,7 +50,7 @@ Server.prototype.fetch = function(object, key) {
     });
   });
 
-  request.close();
+  request.end();
 };
 
 Server.prototype.query = function(query){
