@@ -4,7 +4,7 @@ name: dbslayer.js
 description: Interface to DBSlayer for Node.JS
 version: 0.2
 author: [Guillermo Rauch](http://devthought.com)
-updaters: [Robin Duckett](http://www.twitter.com/robinduckett)
+updaters: [Robin Duckett](http://www.twitter.com/robinduckett),[Barry Ezell](http://twitter.com/barryezl)
 ...
 */
 var sys = require('sys'),
@@ -23,24 +23,34 @@ Server.prototype.fetch = function(object, key) {
   var connection = http.createClient(this.port, this.host);
   var request = connection.request('GET', '/db?' + escape(JSON.stringify(object)), {'host': this.host});
   var server = this;
+
   request.addListener('response', function(response) {
+    var allData = "";
     response.setEncoding('utf8');
     response.addListener('data', function(data) {
+      allData += data;
+    });
+
+		response.addListener('end', function() {
       try {
-        var object = JSON.parse(data);
+				var object = JSON.parse(allData);
       } catch(e) {
         server.emit('error', e);
       }
-      if (object.MYSQL_ERROR !== undefined) {
-        server.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
-      } else if (object.ERROR !== undefined) {
-        server.emit('error', object.ERROR);
-      } else {
-        server.emit(key.toLowerCase(), key ? object[key] : object);
-      }
-    });
+
+			if (object !== undefined) {
+				if (object.MYSQL_ERROR !== undefined) {
+					server.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
+				} else if (object.ERROR !== undefined) {
+					server.emit('error', object.ERROR);
+				} else {
+					server.emit(key.toLowerCase(), key ? object[key] : object);
+				}
+			}
+		});
   });
-  request.end();
+	
+  request.close();
 };
 
 Server.prototype.query = function(query){
