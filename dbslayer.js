@@ -31,25 +31,25 @@ Server.prototype.fetch = function(object, key) {
       allData += data;
     });
 
-		response.addListener('end', function() {
+    response.addListener('end', function() {
       try {
-				var object = JSON.parse(allData);
+        var object = JSON.parse(allData);
       } catch(e) {
         server.emit('error', e);
       }
 
-			if (object !== undefined) {
-				if (object.MYSQL_ERROR !== undefined) {
-					server.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
-				} else if (object.ERROR !== undefined) {
-					server.emit('error', object.ERROR);
-				} else {
-					server.emit(key.toLowerCase(), key ? object[key] : object);
-				}
-			}
-		});
+      if (object !== undefined) {
+        if (object.MYSQL_ERROR !== undefined) {
+          server.emit('error', object.MYSQL_ERROR, object.MYSQL_ERRNO);
+        } else if (object.ERROR !== undefined) {
+          server.emit('error', object.ERROR);
+        } else {
+          server.emit(key.toLowerCase(), key ? object[key] : object);
+        }
+      }
+    });
   });
-	
+
   request.close();
 };
 
