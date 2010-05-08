@@ -109,3 +109,5 @@ Authors
 Guillermo Rauch <[http://devthought.com](http://devthought.com)>
 
 Robin Duckett <[http://www.twitter.com/robinduckett](http://www.twitter.com/robinduckett)>
+
+Barry Ezell <[http://twitter.com/barryezl](http://twitter.com/barryezl)>
