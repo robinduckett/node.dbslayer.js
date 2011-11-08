@@ -1,5 +1,4 @@
 {
-  "author": "Craig Condon",
   "name": "dbslayer",
   "description": "mysql api for node.js",
   "version": "0.0.0",
