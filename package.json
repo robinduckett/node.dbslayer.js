@@ -1,0 +1,15 @@
+{
+  "author": "Craig Condon",
+  "name": "dbslayer",
+  "description": "mysql api for node.js",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/spiceapps/node.dbslayer.js.git"
+  },
+  "engines": {
+    "node": "~0.4.12"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
