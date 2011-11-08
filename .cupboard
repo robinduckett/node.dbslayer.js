@@ -1,0 +1,5 @@
+[project]
+name = dbslayer
+[commands]
+publish = git add ., git commit -m "$@", git push origin master
+ignore = echo $@ >> .gitignore
