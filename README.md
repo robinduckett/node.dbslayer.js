@@ -111,10 +111,15 @@ Test it by running test.js like this:
 If you get a bunch of entries like in this [screenshot](http://cld.ly/9aosh) then dbslayer (and node.dbslayer.js) work!
 
 Authors
-------
+-------
 
 Guillermo Rauch <[http://devthought.com](http://devthought.com)>
 
 Robin Duckett <[http://www.twitter.com/robinduckett](http://www.twitter.com/robinduckett)>
 
 Barry Ezell <[http://twitter.com/barryezl](http://twitter.com/barryezl)>
+
+Contributors
+------------
+
+Craig Condon <[http://spiceapps.com](http://spiceapps.com)>
