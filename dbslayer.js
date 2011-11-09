@@ -8,7 +8,7 @@ updaters: [Robin Duckett](http://www.twitter.com/robinduckett),
 	  [Barry Ezell](http://twitter.com/barryezl)
 ...
 */
-var sys = require('sys'),
+var util = require('util'),
     http = require('http'),
     events = require('events'),
     booleanCommands = ['STAT', 'CLIENT_INFO', 'HOST_INFO', 'SERVER_VERSION', 'CLIENT_VERSION'];
@@ -19,20 +19,20 @@ var Server = function(host, port, timeout) {
   this.timeout = timeout;
 };
 
-sys.inherits(Server, events.EventEmitter);
+util.inherits(Server, events.EventEmitter);
 Server.prototype.fetch = function(object, key) {
   var connection = http.createClient(this.port, this.host);
   var request = connection.request('GET', '/db?' + escape(JSON.stringify(object)), {'host': this.host});
   var server = this;
 
-  request.addListener('response', function(response) {
+  request.on('response', function(response) {
     var allData = "";
     response.setEncoding('utf8');
-    response.addListener('data', function(data) {
+    response.on('data', function(data) {
       allData += data;
     });
 
-    response.addListener('end', function() {
+    response.on('end', function() {
       try {
         var object = JSON.parse(allData);
       } catch(e) {
@@ -68,6 +68,7 @@ for (var i = 0, l = booleanCommands.length; i < l; i++){
     };
   })(booleanCommands[i]);
 }
+
 Server.prototype.fetch_object = function(res, callback) {
   for (var row, i = 0; i < res.ROWS.length; row = res.ROWS[i], i++) {
     var ret = {};
