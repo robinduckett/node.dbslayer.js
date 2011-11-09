@@ -40,7 +40,7 @@ and then perform a query:
 To be truly non-blocking, you must use listeners. This means that in order to be able to perform queries in a designated order or access the result, you'll have to use callbacks:
 
     connection.query("SELECT * FROM TABLE");
-    connection.addListener('result', function(result) {
+    connection.on('result', function(result) {
       for (var i = 0, l = result.ROWS.length; i < l; i++){
         var row = result.ROWS[i];
         // do something with the data
@@ -54,7 +54,7 @@ You **must** remember to remove your listener, otherwise it will be called along
 If you want to capture MySQL errors, subscribe to the 'error' event
 
     connection.query("SELECT * FROM inexistent_table")
-    connection.addListener('error', function(error, errno){
+    connection.on('error', function(error, errno){
       sys.puts('mysql error! + ' error);
     });
 
@@ -63,7 +63,7 @@ Aside from query, the commands `stat`, `client_info`, `host_info`, `server_versi
 More Examples
 -------------
 
-    mysql.addListener('result', function(result) {
+    mysql.on('result', function(result) {
       this.fetch_object(result, function(obj) {
         node.log(obj.Field);
       });
@@ -71,7 +71,7 @@ More Examples
 
 You can use the fetch_object, fetch_array or fetch_args functions as shorthand to return either an object, an array or function callback arguments to retrieve your data.
 
-    mysql.addListener('result', function(result) {
+    mysql.on('result', function(result) {
       this.fetch_array(result, function(arr) {
         node.log(arr[0]);
       });
@@ -79,7 +79,7 @@ You can use the fetch_object, fetch_array or fetch_args functions as shorthand t
 
 Or
 
-    mysql.addListener('result', function(result) {
+    mysql.on('result', function(result) {
       this.fetch_args(result, function(field, type) {
         node.log(field);
       });
