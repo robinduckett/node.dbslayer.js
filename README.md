@@ -15,6 +15,13 @@ Requirements
 * [Node.js](http://nodejs.org/) (tested with v0.1.90)
 * [DBSlayer](http://code.nytimes.com/projects/dbslayer/) (tested with beta-12)
 
+How to Install ![New!](http://i.imgur.com/XSqxQ.jpg)
+--------------
+
+From your npm equipped command line:
+
+    npm install dbslayer
+
 How to Use
 ----------
 
