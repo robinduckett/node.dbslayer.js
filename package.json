@@ -2,6 +2,7 @@
   "name": "dbslayer",
   "description": "mysql api for node.js",
   "version": "0.0.1",
+  "main": "./dbslayer.js",
   "dependencies": {},
   "devDependencies": {}
 }
